@@ -1,4 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserResponseDto } from './dto/user-response.dto';
@@ -23,10 +28,20 @@ export class UsersService {
 
   async findOne(id: string) {
     const user = await this.userRepo.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found!');
+    }
     return new UserResponseDto(user);
   }
 
   async update(id: string, updatePasswordDto: UpdatePasswordDto) {
+    const user = await this.userRepo.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found!');
+    }
+    if (user.password !== updatePasswordDto.oldPassword) {
+      throw new ForbiddenException('Old password is wrong!');
+    }
     const updatedUser = await this.userRepo.updatePassword(
       id,
       updatePasswordDto,
@@ -35,7 +50,11 @@ export class UsersService {
     return new UserResponseDto(updatedUser);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const user = await this.userRepo.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found!');
+    }
     return this.userRepo.delete(id);
   }
 }

@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IUserRepository } from '../interfaces/user-repository.interface';
 import { User } from '../entities/user.entity';
 import { randomUUID } from 'node:crypto';
@@ -17,10 +13,7 @@ export class MemoryUserRepository implements IUserRepository {
     return this.users;
   }
 
-  async findById(id: string): Promise<User> {
-    if (!this.users.find((user) => user.id === id)) {
-      throw new NotFoundException('User not found!');
-    }
+  async findById(id: string): Promise<User | undefined> {
     return this.users.find((user) => user.id === id);
   }
 
@@ -41,10 +34,6 @@ export class MemoryUserRepository implements IUserRepository {
 
   async updatePassword(id: string, data: UpdatePasswordDto): Promise<User> {
     const user = await this.findById(id);
-
-    if (user.password !== data.oldPassword) {
-      throw new ForbiddenException('Incorrect old password!');
-    }
     user.password = data.newPassword;
     user.updatedAt = Date.now();
     user.version += 1;
