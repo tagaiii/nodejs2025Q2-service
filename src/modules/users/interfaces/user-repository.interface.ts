@@ -6,9 +6,6 @@ export interface IUserRepository {
   findAll(): Promise<User[]>;
   findById(id: string): Promise<User | undefined>;
   create(data: CreateUserDto): Promise<User>;
-  updatePassword(
-    id: string,
-    data: UpdatePasswordDto,
-  ): Promise<User | undefined>;
+  updatePassword(id: string, data: UpdatePasswordDto): Promise<User>;
   delete(id: string): Promise<void>;
 }

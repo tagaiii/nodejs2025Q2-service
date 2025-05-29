@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IArtistRepository } from '../interfaces/artist-repository.interface';
 import { Artist } from '../entities/artist.entity';
 import { CreateArtistDto } from '../dto/create-artist.dto';
@@ -14,10 +14,6 @@ export class MemoryArtistRepository implements IArtistRepository {
   }
 
   async findById(id: string): Promise<Artist> {
-    if (!this.artists.find((artist) => artist.id === id)) {
-      throw new NotFoundException('Artist not found!');
-    }
-
     return this.artists.find((artist) => artist.id === id);
   }
 
