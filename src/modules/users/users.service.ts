@@ -13,10 +13,7 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     const newUser = await this.userRepo.create(createUserDto);
 
-    return {
-      message: 'User is successfully created!',
-      user: new UserResponseDto(newUser),
-    };
+    return new UserResponseDto(newUser);
   }
 
   async findAll() {
@@ -35,10 +32,7 @@ export class UsersService {
       updatePasswordDto,
     );
 
-    return {
-      message: 'User is successfully updated!',
-      user: new UserResponseDto(updatedUser),
-    };
+    return new UserResponseDto(updatedUser);
   }
 
   remove(id: string) {

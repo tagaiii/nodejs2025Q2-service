@@ -9,12 +9,8 @@ export class ArtistsService {
     @Inject('ArtistRepository') private readonly artistRepo: IArtistRepository,
   ) {}
 
-  async create(createArtistDto: CreateArtistDto) {
-    const newArtist = await this.artistRepo.create(createArtistDto);
-    return {
-      message: 'Artist is successfully created!',
-      artist: newArtist,
-    };
+  create(createArtistDto: CreateArtistDto) {
+    return this.artistRepo.create(createArtistDto);
   }
 
   findAll() {
@@ -25,12 +21,8 @@ export class ArtistsService {
     return this.artistRepo.findById(id);
   }
 
-  async update(id: string, updateArtistDto: UpdateArtistDto) {
-    const updatedArtist = await this.artistRepo.update(id, updateArtistDto);
-    return {
-      message: 'Artist is successfully updated!',
-      artist: updatedArtist,
-    };
+  update(id: string, updateArtistDto: UpdateArtistDto) {
+    return this.artistRepo.update(id, updateArtistDto);
   }
 
   remove(id: string) {

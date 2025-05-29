@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Put,
+  HttpCode,
 } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -40,6 +41,7 @@ export class ArtistsController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   remove(@Param() params: UuidParamDto) {
     return this.artistsService.remove(params.id);
   }
