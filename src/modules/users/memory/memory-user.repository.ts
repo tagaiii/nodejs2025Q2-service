@@ -1,5 +1,5 @@
 import {
-  BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -45,7 +45,7 @@ export class MemoryUserRepository implements IUserRepository {
       throw new NotFoundException('User not found!');
     }
     if (user.password !== data.oldPassword) {
-      throw new BadRequestException('Incorrect old password!');
+      throw new ForbiddenException('Incorrect old password!');
     }
     user.password = data.newPassword;
     user.updatedAt = Date.now();
