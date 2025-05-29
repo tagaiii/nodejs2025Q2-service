@@ -17,7 +17,10 @@ export class MemoryUserRepository implements IUserRepository {
     return this.users;
   }
 
-  async findById(id: string): Promise<User | undefined> {
+  async findById(id: string): Promise<User> {
+    if (!this.users.find((user) => user.id === id)) {
+      throw new NotFoundException('User not found!');
+    }
     return this.users.find((user) => user.id === id);
   }
 
@@ -36,10 +39,7 @@ export class MemoryUserRepository implements IUserRepository {
     return newUser;
   }
 
-  async updatePassword(
-    id: string,
-    data: UpdatePasswordDto,
-  ): Promise<User | undefined> {
+  async updatePassword(id: string, data: UpdatePasswordDto): Promise<User> {
     const user = await this.findById(id);
     if (!user) {
       throw new NotFoundException('User not found!');
@@ -56,7 +56,9 @@ export class MemoryUserRepository implements IUserRepository {
 
   async delete(id: string): Promise<boolean> {
     const userIndex = this.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) return false;
+    if (userIndex === -1) {
+      throw new NotFoundException('User not found!');
+    }
 
     this.users.splice(userIndex, 1);
 

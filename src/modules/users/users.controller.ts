@@ -10,6 +10,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { UuidParamDto } from './dto/uuid-param.dto';
 
 @Controller('user')
 export class UsersController {
@@ -26,20 +27,20 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  findOne(@Param() params: UuidParamDto) {
+    return this.usersService.findOne(params.id);
   }
 
   @Put(':id')
   update(
-    @Param('id') id: string,
+    @Param() params: UuidParamDto,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    return this.usersService.update(id, updatePasswordDto);
+    return this.usersService.update(params.id, updatePasswordDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  remove(@Param() params: UuidParamDto) {
+    return this.usersService.remove(params.id);
   }
 }
