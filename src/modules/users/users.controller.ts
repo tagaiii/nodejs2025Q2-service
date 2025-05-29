@@ -10,7 +10,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { UuidParamDto } from './dto/uuid-param.dto';
+import { UuidParamDto } from '../../common/dto/uuid-param.dto';
 
 @Controller('user')
 export class UsersController {

@@ -41,9 +41,7 @@ export class MemoryUserRepository implements IUserRepository {
 
   async updatePassword(id: string, data: UpdatePasswordDto): Promise<User> {
     const user = await this.findById(id);
-    if (!user) {
-      throw new NotFoundException('User not found!');
-    }
+
     if (user.password !== data.oldPassword) {
       throw new ForbiddenException('Incorrect old password!');
     }
@@ -54,14 +52,8 @@ export class MemoryUserRepository implements IUserRepository {
     return user;
   }
 
-  async delete(id: string): Promise<boolean> {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
-      throw new NotFoundException('User not found!');
-    }
-
-    this.users.splice(userIndex, 1);
-
-    return true;
+  async delete(id: string): Promise<void> {
+    const user = await this.findById(id);
+    this.users = this.users.filter((u) => u.id !== user.id);
   }
 }

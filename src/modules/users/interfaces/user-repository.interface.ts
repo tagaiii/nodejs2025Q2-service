@@ -4,11 +4,8 @@ import { User } from '../entities/user.entity';
 
 export interface IUserRepository {
   findAll(): Promise<User[]>;
-  findById(id: string): Promise<User | undefined>;
+  findById(id: string): Promise<User>;
   create(data: CreateUserDto): Promise<User>;
-  updatePassword(
-    id: string,
-    data: UpdatePasswordDto,
-  ): Promise<User | undefined>;
-  delete(id: string): Promise<boolean>;
+  updatePassword(id: string, data: UpdatePasswordDto): Promise<User>;
+  delete(id: string): Promise<void>;
 }
