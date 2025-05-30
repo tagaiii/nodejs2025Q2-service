@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { AlbumsController } from './albums.controller';
 import { MemoryRepository } from 'src/common/memory/memory.repository';
+import { TracksModule } from '../tracks/tracks.module';
 
 @Module({
   controllers: [AlbumsController],
@@ -12,6 +13,7 @@ import { MemoryRepository } from 'src/common/memory/memory.repository';
       useClass: MemoryRepository,
     },
   ],
+  imports: [forwardRef(() => TracksModule)],
   exports: [AlbumsService],
 })
 export class AlbumsModule {}

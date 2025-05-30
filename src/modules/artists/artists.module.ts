@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { ArtistsController } from './artists.controller';
 import { MemoryRepository } from 'src/common/memory/memory.repository';
 import { TracksModule } from '../tracks/tracks.module';
+import { AlbumsModule } from '../albums/albums.module';
 
 @Module({
   controllers: [ArtistsController],
@@ -10,6 +11,7 @@ import { TracksModule } from '../tracks/tracks.module';
     ArtistsService,
     { provide: 'ArtistRepository', useClass: MemoryRepository },
   ],
-  imports: [TracksModule],
+  imports: [forwardRef(() => TracksModule), forwardRef(() => AlbumsModule)],
+  exports: [ArtistsService],
 })
 export class ArtistsModule {}

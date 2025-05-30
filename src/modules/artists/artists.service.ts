@@ -1,17 +1,26 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { MemoryRepository } from 'src/common/memory/memory.repository';
 import { Artist } from './entities/artist.entity';
 import { ArtistResponseDto } from './dto/artist-response.dto';
 import { TracksService } from '../tracks/tracks.service';
+import { AlbumsService } from '../albums/albums.service';
 
 @Injectable()
 export class ArtistsService {
   constructor(
     @Inject('ArtistRepository')
     private readonly artistRepo: MemoryRepository<Artist>,
+    @Inject(forwardRef(() => TracksService))
     private readonly trackService: TracksService,
+    @Inject(forwardRef(() => AlbumsService))
+    private readonly albumService: AlbumsService,
   ) {}
 
   async create(createArtistDto: CreateArtistDto) {
@@ -46,6 +55,13 @@ export class ArtistsService {
     for (const track of connectedTracks) {
       await this.trackService.update(track.id, { artistId: null });
     }
+
+    const albums = await this.albumService.findAll();
+    const connectedAlbums = albums.filter((album) => album.artistId === id);
+    for (const album of connectedAlbums) {
+      await this.albumService.update(album.id, { artistId: null });
+    }
+
     return this.artistRepo.delete(id);
   }
 }
