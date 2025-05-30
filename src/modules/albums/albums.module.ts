@@ -1,0 +1,17 @@
+import { Module } from '@nestjs/common';
+import { AlbumsService } from './albums.service';
+import { AlbumsController } from './albums.controller';
+import { MemoryRepository } from 'src/common/memory/memory.repository';
+
+@Module({
+  controllers: [AlbumsController],
+  providers: [
+    AlbumsService,
+    {
+      provide: 'AlbumRepository',
+      useClass: MemoryRepository,
+    },
+  ],
+  exports: [AlbumsService],
+})
+export class AlbumsModule {}
