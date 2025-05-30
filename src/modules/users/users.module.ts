@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { MemoryUserRepository } from './memory/memory-user.repository';
+import { MemoryRepository } from 'src/common/memory/memory.repository';
 
 @Module({
   controllers: [UsersController],
@@ -9,7 +9,7 @@ import { MemoryUserRepository } from './memory/memory-user.repository';
     UsersService,
     {
       provide: 'UserRepository',
-      useClass: MemoryUserRepository,
+      useClass: MemoryRepository,
     },
   ],
 })

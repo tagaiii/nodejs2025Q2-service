@@ -7,12 +7,13 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-import { IUserRepository } from './interfaces/user-repository.interface';
+import { MemoryRepository } from 'src/common/memory/memory.repository';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject('UserRepository') private readonly userRepo: IUserRepository,
+    @Inject('UserRepository') private readonly userRepo: MemoryRepository<User>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -34,7 +35,7 @@ export class UsersService {
     return new UserResponseDto(user);
   }
 
-  async update(id: string, updatePasswordDto: UpdatePasswordDto) {
+  async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
     const user = await this.userRepo.findById(id);
     if (!user) {
       throw new NotFoundException('User not found!');
@@ -42,10 +43,10 @@ export class UsersService {
     if (user.password !== updatePasswordDto.oldPassword) {
       throw new ForbiddenException('Old password is wrong!');
     }
-    const updatedUser = await this.userRepo.updatePassword(
-      id,
-      updatePasswordDto,
-    );
+    const updatedUser = await this.userRepo.update(id, {
+      ...user,
+      password: updatePasswordDto.newPassword,
+    });
 
     return new UserResponseDto(updatedUser);
   }

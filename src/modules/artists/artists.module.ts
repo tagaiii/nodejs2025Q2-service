@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { ArtistsController } from './artists.controller';
-import { MemoryArtistRepository } from './memory/memory-artist.repository';
+import { MemoryRepository } from 'src/common/memory/memory.repository';
 
 @Module({
   controllers: [ArtistsController],
   providers: [
     ArtistsService,
-    { provide: 'ArtistRepository', useClass: MemoryArtistRepository },
+    { provide: 'ArtistRepository', useClass: MemoryRepository },
   ],
 })
 export class ArtistsModule {}

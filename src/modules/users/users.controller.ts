@@ -37,7 +37,7 @@ export class UsersController {
     @Param() params: UuidParamDto,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    return this.usersService.update(params.id, updatePasswordDto);
+    return this.usersService.updatePassword(params.id, updatePasswordDto);
   }
 
   @Delete(':id')
