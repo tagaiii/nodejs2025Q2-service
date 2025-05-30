@@ -3,6 +3,7 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { MemoryRepository } from 'src/common/memory/memory.repository';
 import { Artist } from './entities/artist.entity';
+import { ArtistResponseDto } from './dto/artist-response.dto';
 
 @Injectable()
 export class ArtistsService {
@@ -12,11 +13,13 @@ export class ArtistsService {
   ) {}
 
   async create(createArtistDto: CreateArtistDto) {
-    return this.artistRepo.create(createArtistDto);
+    const artist = await this.artistRepo.create(createArtistDto);
+    return new ArtistResponseDto(artist);
   }
 
   async findAll() {
-    return this.artistRepo.findAll();
+    const artists = await this.artistRepo.findAll();
+    return artists.map((artist) => new ArtistResponseDto(artist));
   }
 
   async findOne(id: string) {
@@ -24,12 +27,13 @@ export class ArtistsService {
     if (!artist) {
       throw new NotFoundException('Artist not found!');
     }
-    return artist;
+    return new ArtistResponseDto(artist);
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto) {
     await this.findOne(id);
-    return this.artistRepo.update(id, updateArtistDto);
+    const updatedArtist = await this.artistRepo.update(id, updateArtistDto);
+    return new ArtistResponseDto(updatedArtist);
   }
 
   async remove(id: string) {
