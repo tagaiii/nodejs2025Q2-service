@@ -44,7 +44,6 @@ export class UsersService {
       throw new ForbiddenException('Old password is wrong!');
     }
     const updatedUser = await this.userRepo.update(id, {
-      ...user,
       password: updatePasswordDto.newPassword,
     });
 

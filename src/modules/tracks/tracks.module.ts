@@ -12,5 +12,6 @@ import { MemoryRepository } from 'src/common/memory/memory.repository';
       useClass: MemoryRepository,
     },
   ],
+  exports: [TracksService],
 })
 export class TracksModule {}

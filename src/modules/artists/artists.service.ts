@@ -4,12 +4,14 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 import { MemoryRepository } from 'src/common/memory/memory.repository';
 import { Artist } from './entities/artist.entity';
 import { ArtistResponseDto } from './dto/artist-response.dto';
+import { TracksService } from '../tracks/tracks.service';
 
 @Injectable()
 export class ArtistsService {
   constructor(
     @Inject('ArtistRepository')
     private readonly artistRepo: MemoryRepository<Artist>,
+    private readonly trackService: TracksService,
   ) {}
 
   async create(createArtistDto: CreateArtistDto) {
@@ -38,6 +40,12 @@ export class ArtistsService {
 
   async remove(id: string) {
     await this.findOne(id);
+
+    const tracks = await this.trackService.findAll();
+    const connectedTracks = tracks.filter((track) => track.artistId === id);
+    for (const track of connectedTracks) {
+      await this.trackService.update(track.id, { artistId: null });
+    }
     return this.artistRepo.delete(id);
   }
 }
