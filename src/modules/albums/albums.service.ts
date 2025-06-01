@@ -10,6 +10,7 @@ import { MemoryRepository } from 'src/common/memory/memory.repository';
 import { Album } from './entities/album.entity';
 import { AlbumResponseDto } from './dto/album-response.dto';
 import { TracksService } from '../tracks/tracks.service';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Injectable()
 export class AlbumsService {
@@ -18,6 +19,8 @@ export class AlbumsService {
     private readonly albumRepo: MemoryRepository<Album>,
     @Inject(forwardRef(() => TracksService))
     private readonly trackService: TracksService,
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly favoriteService: FavoritesService,
   ) {}
 
   async create(createAlbumDto: CreateAlbumDto) {
@@ -54,6 +57,9 @@ export class AlbumsService {
     for (const track of connectedTracks) {
       await this.trackService.update(track.id, { albumId: null });
     }
+
+    this.favoriteService.removeEntity('album', id);
+
     return this.albumRepo.delete(id);
   }
 }

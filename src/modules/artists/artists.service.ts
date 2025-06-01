@@ -11,6 +11,7 @@ import { Artist } from './entities/artist.entity';
 import { ArtistResponseDto } from './dto/artist-response.dto';
 import { TracksService } from '../tracks/tracks.service';
 import { AlbumsService } from '../albums/albums.service';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Injectable()
 export class ArtistsService {
@@ -21,6 +22,8 @@ export class ArtistsService {
     private readonly trackService: TracksService,
     @Inject(forwardRef(() => AlbumsService))
     private readonly albumService: AlbumsService,
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly favoriteService: FavoritesService,
   ) {}
 
   async create(createArtistDto: CreateArtistDto) {
@@ -61,6 +64,8 @@ export class ArtistsService {
     for (const album of connectedAlbums) {
       await this.albumService.update(album.id, { artistId: null });
     }
+
+    this.favoriteService.removeEntity('artist', id);
 
     return this.artistRepo.delete(id);
   }

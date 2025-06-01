@@ -3,6 +3,7 @@ import { AlbumsService } from './albums.service';
 import { AlbumsController } from './albums.controller';
 import { MemoryRepository } from 'src/common/memory/memory.repository';
 import { TracksModule } from '../tracks/tracks.module';
+import { FavoritesModule } from '../favorites/favorites.module';
 
 @Module({
   controllers: [AlbumsController],
@@ -13,7 +14,7 @@ import { TracksModule } from '../tracks/tracks.module';
       useClass: MemoryRepository,
     },
   ],
-  imports: [forwardRef(() => TracksModule)],
+  imports: [forwardRef(() => TracksModule), forwardRef(() => FavoritesModule)],
   exports: [AlbumsService],
 })
 export class AlbumsModule {}
