@@ -11,7 +11,7 @@ export class MemoryRepository<T extends Partial<BaseEntity>>
     return this.entities;
   }
 
-  async findById(id: string): Promise<T | undefined> {
+  async findById(id: string): Promise<T | null> {
     return this.entities.find((entity) => entity.id === id);
   }
 
