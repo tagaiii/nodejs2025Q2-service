@@ -3,9 +3,8 @@ info:
   title: Home Library Service
   description: Home music library service
   version: 1.0.0
-
 servers:
-  - url: /
+  - url: http://localhost:4000
 
 components:
   schemas:
@@ -21,10 +20,10 @@ components:
         version:
           type: number
           example: 1
-        createAt:
+        createdAt:
           type: number
           example: 1655000000
-        updateAt:
+        updatedAt:
           type: number
           example: 1655000000
       required:
@@ -83,7 +82,7 @@ components:
           nullable: true
         duration:
           type: integer
-          description: In seconds
+          minimum: 1
           example: 262
       required:
         - id
