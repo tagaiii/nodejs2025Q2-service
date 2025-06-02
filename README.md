@@ -11,11 +11,19 @@
 git clone {repository URL}
 ```
 
-## Installing NPM modules
+## Move to the project directory
+
+```
+cd nodejs2025Q2-service
+```
+
+## Installing dependencies
 
 ```
 npm install
 ```
+
+## Create `.env` file with the content of `.env.example` file
 
 ## Running application
 
@@ -23,9 +31,11 @@ npm install
 npm start
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+After starting the app on port (4000 as default) you can check it in **Postman** or **Swagger Editor**:
+
+1.  Import doc/api.yaml file as collection to **Postman**
+    or
+2.  Insert api.yaml file content into **Swagger Editor**
 
 ## Testing
 
@@ -45,16 +55,6 @@ npm run test -- <path to suite>
 
 To run all test with authorization
 
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
 ### Auto-fix and format
 
 ```
@@ -64,9 +64,3 @@ npm run lint
 ```
 npm run format
 ```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
