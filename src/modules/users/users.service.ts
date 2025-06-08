@@ -1,5 +1,4 @@
 import {
-  Inject,
   Injectable,
   NotFoundException,
   ForbiddenException,
@@ -7,28 +6,36 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-import { MemoryRepository } from 'src/common/memory/memory.repository';
 import { User } from './entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject('UserRepository') private readonly userRepo: MemoryRepository<User>,
+    @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const newUser = await this.userRepo.create(createUserDto);
+    const currentTimestamp = Date.now();
+    const user = this.userRepo.create({
+      ...createUserDto,
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
+    });
+
+    const newUser = await this.userRepo.save(user);
 
     return new UserResponseDto(newUser);
   }
 
   async findAll() {
-    const users = await this.userRepo.findAll();
+    const users = await this.userRepo.find();
     return users.map((user) => new UserResponseDto(user));
   }
 
   async findOne(id: string) {
-    const user = await this.userRepo.findById(id);
+    const user = await this.userRepo.findOneBy({ id: id });
     if (!user) {
       throw new NotFoundException('User not found!');
     }
@@ -36,16 +43,18 @@ export class UsersService {
   }
 
   async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
-    const user = await this.userRepo.findById(id);
+    const user = await this.userRepo.findOneBy({ id: id });
     if (!user) {
       throw new NotFoundException('User not found!');
     }
     if (user.password !== updatePasswordDto.oldPassword) {
       throw new ForbiddenException('Old password is wrong!');
     }
-    const updatedUser = await this.userRepo.update(id, {
+    await this.userRepo.update(id, {
       password: updatePasswordDto.newPassword,
+      updatedAt: Date.now(),
     });
+    const updatedUser = await this.userRepo.findOneBy({ id: id });
 
     return new UserResponseDto(updatedUser);
   }
