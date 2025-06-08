@@ -1,15 +1,8 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
 import { AlbumResponseDto } from './dto/album-response.dto';
-import { TracksService } from '../tracks/tracks.service';
-import { FavoritesService } from '../favorites/favorites.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -18,10 +11,6 @@ export class AlbumsService {
   constructor(
     @InjectRepository(Album)
     private readonly albumRepo: Repository<Album>,
-    @Inject(forwardRef(() => TracksService))
-    private readonly trackService: TracksService,
-    @Inject(forwardRef(() => FavoritesService))
-    private readonly favoriteService: FavoritesService,
   ) {}
 
   async create(createAlbumDto: CreateAlbumDto) {
@@ -54,14 +43,6 @@ export class AlbumsService {
 
   async remove(id: string) {
     await this.findOne(id);
-
-    // const tracks = await this.trackService.findAll();
-    // const connectedTracks = tracks.filter((track) => track.albumId === id);
-    // for (const track of connectedTracks) {
-    //   await this.trackService.update(track.id, { albumId: null });
-    // }
-
-    // this.favoriteService.removeEntity('album', id);
 
     return this.albumRepo.delete(id);
   }
