@@ -51,7 +51,7 @@ export class TracksService {
   async remove(id: string) {
     await this.findOne(id);
 
-    this.favoriteService.removeEntity('track', id);
+    // this.favoriteService.removeEntity('track', id);
     return this.trackRepo.delete(id);
   }
 }
