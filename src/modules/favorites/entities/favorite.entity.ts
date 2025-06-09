@@ -1,12 +1,22 @@
-import { BaseEntity } from 'src/common/interfaces/base-entity.interface';
+import { Album } from '../../albums/entities/album.entity';
+import { Artist } from '../../artists/entities/artist.entity';
+import { Track } from '../../tracks/entities/track.entity';
+import { Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-export class Favorites implements BaseEntity {
+@Entity('favorites')
+export class Favorites {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
-  version: number;
-  createdAt: number;
-  updatedAt: number;
 
-  artists: string[];
-  albums: string[];
-  tracks: string[];
+  @ManyToMany(() => Artist)
+  @JoinTable()
+  artists: Artist[];
+
+  @ManyToMany(() => Album)
+  @JoinTable()
+  albums: Album[];
+
+  @ManyToMany(() => Track)
+  @JoinTable()
+  tracks: Track[];
 }
