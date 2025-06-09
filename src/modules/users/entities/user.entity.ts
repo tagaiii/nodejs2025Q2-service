@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, VersionColumn } from 'typeorm';
 import { numberTransformer } from '../../../common/utils';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
