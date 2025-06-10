@@ -64,3 +64,36 @@ npm run lint
 ```
 npm run format
 ```
+
+### Docker initialization
+
+**==To startup Docker container you need to install and run Docker Desktop==**
+
+To start Docker container
+
+```
+npm run compose:up
+```
+
+To build/rebuild images
+
+```
+npm run compose:build
+```
+
+To check for vulnerabilities
+
+```
+npm run scan:all
+```
+
+### Migrations
+
+If you want to manually execute operations with migrations, you can use following scripts:
+
+- `npm run migration:generate`
+  Generates new migration file according to application entities
+- `npm run migration:run`
+  Runs all pending migrations
+- `npm run migration:revert`
+  Reverts(calls _down_ method of) last applied migration
