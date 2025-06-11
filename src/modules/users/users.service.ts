@@ -9,7 +9,7 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { hash } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -18,12 +18,12 @@ export class UsersService {
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     private readonly configService: ConfigService,
   ) {}
+  cryptSalt = this.configService.get<string>('CRYPT_SALT');
 
   async create(createUserDto: CreateUserDto) {
-    const cryptSalt = this.configService.get<string>('CRYPT_SALT');
     createUserDto.password = await hash(
       createUserDto.password,
-      Number(cryptSalt),
+      Number(this.cryptSalt),
     );
 
     const currentTimestamp = Date.now();
@@ -56,14 +56,16 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found!');
     }
-    if (user.password !== updatePasswordDto.oldPassword) {
+    if (!(await compare(updatePasswordDto.oldPassword, user.password))) {
       throw new ForbiddenException('Old password is wrong!');
     }
-    await this.userRepo.update(id, {
-      password: updatePasswordDto.newPassword,
-      updatedAt: Date.now(),
-    });
-    const updatedUser = await this.userRepo.findOneBy({ id: id });
+
+    user.password = await hash(
+      updatePasswordDto.newPassword,
+      Number(this.cryptSalt),
+    );
+    user.updatedAt = Date.now();
+    const updatedUser = await this.userRepo.save(user);
 
     return new UserResponseDto(updatedUser);
   }
