@@ -9,14 +9,23 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { hash } from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
+    private readonly configService: ConfigService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+    const cryptSalt = this.configService.get<string>('CRYPT_SALT');
+    createUserDto.password = await hash(
+      createUserDto.password,
+      Number(cryptSalt),
+    );
+
     const currentTimestamp = Date.now();
     const user = this.userRepo.create({
       ...createUserDto,
