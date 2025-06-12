@@ -22,6 +22,13 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
+  accessTokenKey = this.configService.get<string>('JWT_SECRET_KEY');
+  accessTokenExpireTime = this.configService.get<string>('TOKEN_EXPIRE_TIME');
+  refreshTokenKey = this.configService.get<string>('JWT_SECRET_REFRESH_KEY');
+  refreshTokenExpireTime = this.configService.get<string>(
+    'TOKEN_REFRESH_EXPIRE_TIME',
+  );
+
   async signup(signupDto: AuthDto) {
     const user = await this.userRepo.findOneBy({ login: signupDto.login });
     if (user) {
@@ -44,18 +51,30 @@ export class AuthService {
   }
 
   async generateTokens(payload: JwtPayload) {
-    const refreshTokenKey = this.configService.get<string>(
-      'JWT_REFRESH_TOKEN_KEY',
-    );
-    const refreshTokenExpireTime = this.configService.get<string>(
-      'TOKEN_REFRESH_EXPIRE_TIME',
-    );
     return {
-      accessToken: await this.jwtService.signAsync(payload),
+      accessToken: await this.jwtService.signAsync(payload, {
+        secret: this.accessTokenKey,
+        expiresIn: this.accessTokenExpireTime,
+      }),
       refreshToken: await this.jwtService.signAsync(payload, {
-        secret: refreshTokenKey,
-        expiresIn: refreshTokenExpireTime,
+        secret: this.refreshTokenKey,
+        expiresIn: this.refreshTokenExpireTime,
       }),
     };
+  }
+
+  async refreshToken(token: string) {
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: this.refreshTokenKey,
+      });
+
+      return await this.generateTokens({
+        userId: payload.userId,
+        login: payload.login,
+      });
+    } catch {
+      throw new ForbiddenException('Refresh token is invalid or expired!');
+    }
   }
 }
