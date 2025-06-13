@@ -9,7 +9,7 @@ import {
 import { AuthDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { Public } from 'src/common/decorators/public.decorator';
-import { RefreshTokenDto } from './refreshToken.dto';
+import { RefreshTokenDto } from './dto/refreshToken.dto';
 import { UnauthorizedValidationPipe } from 'src/common/pipes/unauthorized.pipe';
 
 @Controller('auth')
