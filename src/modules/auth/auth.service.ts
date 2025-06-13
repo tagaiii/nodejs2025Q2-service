@@ -22,8 +22,6 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  accessTokenKey = this.configService.get<string>('JWT_SECRET_KEY');
-  accessTokenExpireTime = this.configService.get<string>('TOKEN_EXPIRE_TIME');
   refreshTokenKey = this.configService.get<string>('JWT_SECRET_REFRESH_KEY');
   refreshTokenExpireTime = this.configService.get<string>(
     'TOKEN_REFRESH_EXPIRE_TIME',
@@ -52,10 +50,7 @@ export class AuthService {
 
   async generateTokens(payload: JwtPayload) {
     return {
-      accessToken: await this.jwtService.signAsync(payload, {
-        secret: this.accessTokenKey,
-        expiresIn: this.accessTokenExpireTime,
-      }),
+      accessToken: await this.jwtService.signAsync(payload),
       refreshToken: await this.jwtService.signAsync(payload, {
         secret: this.refreshTokenKey,
         expiresIn: this.refreshTokenExpireTime,
