@@ -5,9 +5,14 @@ import { ValidationPipe } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { AuthGuard } from './common/guards/auth.guard';
 import { JwtService } from '@nestjs/jwt';
+import { LoggerService } from './common/logger/logger.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+  app.useLogger(new LoggerService());
+
   app.useGlobalPipes(new ValidationPipe());
 
   const reflector = app.get(Reflector);

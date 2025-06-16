@@ -11,12 +11,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { compare, hash } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { LoggerService } from 'src/common/logger/logger.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     private readonly configService: ConfigService,
+    private readonly logger: LoggerService,
   ) {}
   cryptSalt = this.configService.get<string>('CRYPT_SALT');
 

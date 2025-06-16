@@ -10,6 +10,7 @@ import { FavoritesModule } from './modules/favorites/favorites.module';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
+import { LoggerModule } from './common/logger/logger.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { AuthModule } from './modules/auth/auth.module';
     AlbumsModule,
     FavoritesModule,
     AuthModule,
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
