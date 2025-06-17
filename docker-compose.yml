@@ -1,0 +1,40 @@
+services:
+  app:
+    container_name: rest-service
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+    ports:
+      - ${PORT}:4000
+    networks:
+      - app-network
+    restart: always
+  postgres:
+    container_name: postgres
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+    restart: always
+
+volumes:
+  pgdata:
+
+networks:
+  app-network:
